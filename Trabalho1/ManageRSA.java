@@ -34,7 +34,7 @@ public class ManageRSA {
         List<BigInteger> newMessage = new ArrayList<BigInteger>();
         
         for(i=0; i<message.length(); i++){
-            BigInteger c = BigInteger.valueOf(Character.getNumericValue(message.charAt(i)));
+            BigInteger c = BigInteger.valueOf(message.charAt(i));
             System.out.println("Char: " + c.intValue());
             newMessage.add(c.modPow(pub, n));
             //newMessage.add((int)(Math.pow(c, pub) % n));
