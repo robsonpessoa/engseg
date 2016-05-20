@@ -7,7 +7,7 @@ import java.math.*;
 public class ManageRSA {
 	private static final int CONSTANT_P = 257;
 	private static final int CONSTANT_Q = 263;
-	private static final int PRIVATE_KEY = 7;
+	private static final int PUBLIC_KEY = 7;
 
 	private BigInteger n, z, p, q, publicKey, privateKey;
 
@@ -75,7 +75,7 @@ public class ManageRSA {
 	}
 
 	private BigInteger autoPublic() {
-		return BigInteger.valueOf(PRIVATE_KEY);
+		return BigInteger.valueOf(PUBLIC_KEY);
 	}
 
 	private boolean checkPrime(int p) {
