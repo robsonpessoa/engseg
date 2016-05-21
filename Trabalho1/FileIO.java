@@ -47,15 +47,37 @@ public class FileIO {
 	    return result;
 	}
 
+	public void writeTextFile(String content, String filename) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+
+		try {
+			writer.write(content);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+	}
+
+	public void writeTextFile(String content) throws IOException {
+		String filename = this.filename + OUT_SUFFIX;
+		if (hasSuffix)
+			filename += WINDOWS_SUFFIX;
+
+		writeTextFile(content, filename);
+	}
+
 	public List<BigInteger> read() throws Exception {
 		System.out.println("Reading the file...");
-		Scanner reader = new Scanner(file);
+		DataInputStream reader = new DataInputStream(new FileInputStream(file));
 		List<BigInteger> result = new ArrayList<>();
 
 		try {
-			while(reader.hasNextInt()) {
-				result.add(BigInteger.valueOf(reader.nextInt()));
+			while(true) {
+				result.add(BigInteger.valueOf(reader.readInt()));
 			}
+		} catch(EOFException ex){
+
 		} finally {
 			reader.close();
 		}
@@ -93,15 +115,38 @@ public class FileIO {
 
 	public void write(List<BigInteger> content, String filename) throws Exception {
 		System.out.println("Saving the file...");
-		FileOutputStream writer = new FileOutputStream(filename);
+		DataOutputStream writer = new DataOutputStream(new FileOutputStream(filename));
 
 		try {
 			for (BigInteger b : content)
-				writer.write(b.intValue());
+				writer.writeInt(b.intValue());
 		} finally {
 			writer.close();
 		}
 
 		System.out.println("The file was saved with the name: " + filename + ".");
+	}
+
+	public static void main(String args[]) {
+		try {
+			FileIO fio = new FileIO("file_in");
+			String message = fio.readTextFile();
+			fio.write(message, "file_out.bin");
+
+			fio = new FileIO("file_out.bin");
+			List<BigInteger> content = fio.read();
+			System.out.println(content);
+
+			String newMessage = new String();
+
+			for (int i = 0; i < content.size(); i++) {
+				BigInteger newChar = content.get(i);
+				newMessage += Character.toString((char) newChar.intValue());
+			}
+
+			fio.writeTextFile(newMessage, "file_out");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }
