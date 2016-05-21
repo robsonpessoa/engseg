@@ -1,7 +1,7 @@
 public class SinCypher {
 	int key = 10;
 
-	public static void main(String args[]){
+	public static void main(String[] args){
 		SinCypher sc = new SinCypher();
 		String message = "Goodbye World...";
 		String encrypted, decrypted;
@@ -9,6 +9,7 @@ public class SinCypher {
 		encrypted = sc.encrypt(message);
 		decrypted = sc.decrypt(encrypted);
 
+		System.out.println(message.length());
 		System.out.println("Original: " + message + "\nEncriptada: " + encrypted + "\nDecriptada: " + decrypted);
 
 	}
