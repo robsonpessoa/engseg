@@ -1,6 +1,3 @@
-
-import java.math.*;
-
 public class SinCypher {
 	int key = 10;
 
