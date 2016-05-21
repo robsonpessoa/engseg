@@ -6,12 +6,36 @@ import java.util.List;
  */
 public class FileCipher {
 
+	private int RSAPublicKey;
+	private int scrambleKey;
+
+	public FileCipher(int rsaPublicKey, int scrambleKey) {
+		this.RSAPublicKey = rsaPublicKey;
+		this.scrambleKey = scrambleKey;
+	}
+
 	private static boolean validateArguments(String args[]) {
 		if (args.length < 2 || args.length > 3) {
 			System.err.println("Error: command not accepted.");
 			System.err.println("Try the following:");
 			System.err.println("\t encrypt <filename_in> [<filename_out>]");
 			System.err.println("\t decrypt <filename_in> [<filename_out>]");
+			return false;
+		}
+
+		String rsaKeyString = args[1];
+		String scrambleKeyString = args[2];
+
+		int rsaKey = Integer.parseInt(rsaKeyString);
+		int scrambleKey = Integer.parseInt(scrambleKeyString);
+
+		if (!Util.isPrime(rsaKey) || !Util.isPrime(scrambleKey)) {
+			System.err.println("The keys must be a prime number");
+			return false;
+		}
+
+		if (rsaKey == scrambleKey) {
+			System.err.println("The keys must be distinct numbers");
 			return false;
 		}
 
@@ -22,9 +46,10 @@ public class FileCipher {
 	 * O programa principal responsável por direcionar os comandos escolhidos
 	 * pelo usuário.
 	 * <p>
-	 * Os comandos possíveis são 'encrypt' e 'decrypt', que devrá ser executado
-	 * passando como argumento do programa o nome do arquivo de entrada. Além disso,
-	 * um nome de arquivo de saída também pode ser passado como argumento (opicional).
+	 * Os comandos possíveis são 'encrypt' e 'decrypt', que deverãp ser executados
+	 * passando como argumento dois números primos distintos, assim como o nome do
+	 * arquivo de entrada. Além disso, um nome de arquivo de saída também pode ser
+	 * passado como argumento (opicional).
 	 *
 	 * @param args os argumentos do programa
 	 */
@@ -33,12 +58,16 @@ public class FileCipher {
 			return;
 
 		String command = args[0];
-		String sourceFile = args[1];
+		String rsaKeyString = args[1];
+		String scrambleKeyString = args[2];
+		int rsaKey = Integer.parseInt(rsaKeyString);
+		int scrambleKey = Integer.parseInt(scrambleKeyString);
+		String sourceFile = args[3];
 		String destinyFile = null;
-		if (args.length == 3)
-			destinyFile = args[2];
+		if (args.length == 5)
+			destinyFile = args[4];
 
-		FileCipher fileCipher = new FileCipher();
+		FileCipher fileCipher = new FileCipher(rsaKey, scrambleKey);
 
 		switch (command) {
 			case "encrypt":
@@ -87,11 +116,13 @@ public class FileCipher {
 
 		System.out.println("Encrypting...");
 		// Applying the ScrambleCipher
-		ScrambleCipher sin = new ScrambleCipher();
-		content = sin.encrypt(content);
+		ScrambleCipher scramble = new ScrambleCipher();
+		scramble.setPublicKey(scrambleKey);
+		content = scramble.encrypt(content);
 
 		// Applying the RSA
 		ManageRSA rsa = new ManageRSA();
+		rsa.setPublicKey(RSAPublicKey);
 		List<BigInteger> encrypted = rsa.encrypt(content);
 
 		if (fileOut != null)
@@ -124,11 +155,13 @@ public class FileCipher {
 		System.out.println("Decrypting...");
 		// Applying the RSA
 		ManageRSA rsa = new ManageRSA();
+		rsa.setPublicKey(RSAPublicKey);
 		String decrypted = rsa.decrypt(content);
 
 		// Applying the ScrambleCipher
-		ScrambleCipher sin = new ScrambleCipher();
-		decrypted = sin.decrypt(decrypted);
+		ScrambleCipher scramble = new ScrambleCipher();
+		scramble.setPublicKey(scrambleKey);
+		decrypted = scramble.decrypt(decrypted);
 
 		if (fileOut == null)
 			fio.writeTextFile(decrypted, fileIn.replace(".txt", ""));

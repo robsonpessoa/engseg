@@ -1,5 +1,9 @@
 public class ScrambleCipher {
-	private static final int KEY = 7;
+	private int publicKey = 7;
+
+	public void setPublicKey(int key) {
+		this.publicKey = 7;
+	}
 
 	public String encrypt(String message) {
 		String newMessage = new String();
@@ -7,7 +11,7 @@ public class ScrambleCipher {
 		int i;
 
 		for (i = 0; i < message.length(); i++) {
-			temp[(i * KEY) % message.length()] = message.charAt(i);
+			temp[(i * publicKey) % message.length()] = message.charAt(i);
 		}
 
 		for (i = 0; i < message.length(); i++) {
@@ -23,7 +27,7 @@ public class ScrambleCipher {
 		int i;
 
 		for (i = 0; i < message.length(); i++) {
-			temp[i] = message.charAt((i * KEY) % message.length());
+			temp[i] = message.charAt((i * publicKey) % message.length());
 		}
 
 		for (i = 0; i < message.length(); i++) {

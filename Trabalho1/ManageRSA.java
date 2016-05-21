@@ -2,8 +2,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.sqrt;
-
 public class ManageRSA {
 	private static final int CONSTANT_P = 257;
 	private static final int CONSTANT_Q = 263;
@@ -41,14 +39,14 @@ public class ManageRSA {
 	}
 
 	public void initVariables(int p, int q) {
-		if (checkPrime(p)) this.p = BigInteger.valueOf(p);
-		if (checkPrime(q)) this.q = BigInteger.valueOf(q);
+		if (Util.isPrime(p)) this.p = BigInteger.valueOf(p);
+		if (Util.isPrime(q)) this.q = BigInteger.valueOf(q);
 		n = this.p.multiply(this.q);
 		z = this.p.subtract(BigInteger.valueOf(1)).multiply(this.q.subtract(BigInteger.valueOf(1)));
 	}
 
 	public int setPublicKey(int pub) {
-		if (checkPrime(pub) && pub < z.intValue()) {
+		if (Util.isPrime(pub) && pub < z.intValue()) {
 			this.publicKey = BigInteger.valueOf(pub);
 			privateKey = calculatePrivateKey(BigInteger.valueOf(pub));
 			return 1;
@@ -76,13 +74,5 @@ public class ManageRSA {
 
 	private BigInteger autoPublic() {
 		return BigInteger.valueOf(PUBLIC_KEY);
-	}
-
-	private boolean checkPrime(int p) {
-		for (int i = 2; i < sqrt(p) + 1; i++) {
-			if (p % i == 0) return false;
-		}
-
-		return true;
 	}
 }
