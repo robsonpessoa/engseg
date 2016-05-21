@@ -6,14 +6,21 @@ import java.util.List;
  */
 public class FileCipher {
 
-	public static void main(String args[]) {
+	private static boolean validateArguments(String args[]) {
 		if (args.length < 2 || args.length > 3) {
 			System.err.println("Error: command not accepted.");
 			System.err.println("Try the following:");
 			System.err.println("\t encrypt <filename_in> [<filename_out>]");
 			System.err.println("\t decrypt <filename_in> [<filename_out>]");
-			return;
+			return false;
 		}
+
+		return true;
+	}
+
+	public static void main(String args[]) {
+		if (!validateArguments(args))
+			return;
 
 		String command = args[0];
 		String sourceFile = args[1];
