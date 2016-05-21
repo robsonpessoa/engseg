@@ -25,29 +25,6 @@ public class FileIO {
 		this.file = new File(filename);
 	}
 
-	public static void main(String args[]) {
-		try {
-			FileIO fio = new FileIO("file_in");
-			String message = fio.readTextFile();
-			fio.write(message, "file_out.bin");
-
-			fio = new FileIO("file_out.bin");
-			List<BigInteger> content = fio.read();
-			System.out.println(content);
-
-			String newMessage = new String();
-
-			for (int i = 0; i < content.size(); i++) {
-				BigInteger newChar = content.get(i);
-				newMessage += Character.toString((char) newChar.intValue());
-			}
-
-			fio.writeTextFile(newMessage, "file_out");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
 	public String readTextFile() throws Exception {
 		System.out.println("Reading the file...");
 		BufferedReader reader = new BufferedReader(new FileReader(file));

@@ -17,17 +17,6 @@ public class ManageRSA {
 		privateKey = calculatePrivateKey(publicKey);
 	}
 
-	public static void main(String args[]) {
-		ManageRSA a = new ManageRSA();
-
-		String message = "olar";
-		List<BigInteger> cyphered = a.encrypt(message);
-
-		System.out.println(message
-				+ " - " + cyphered
-				+ " - " + a.decrypt(cyphered));
-	}
-
 	public List<BigInteger> encrypt(String message) {
 		int i;
 		List<BigInteger> newMessage = new ArrayList<BigInteger>();

@@ -1,18 +1,5 @@
-public class SinCypher {
-	int key = 7;
-
-	public static void main(String[] args) {
-		SinCypher sc = new SinCypher();
-		String message = "Goodbye World...";
-		String encrypted, decrypted;
-
-		encrypted = sc.encrypt(message);
-		decrypted = sc.decrypt(encrypted);
-
-		System.out.println(message.length());
-		System.out.println("Original: " + message + "\nEncriptada: " + encrypted + "\nDecriptada: " + decrypted);
-
-	}
+public class ScrambleCipher {
+	private static final int KEY = 7;
 
 	public String encrypt(String message) {
 		String newMessage = new String();
@@ -20,7 +7,7 @@ public class SinCypher {
 		int i;
 
 		for (i = 0; i < message.length(); i++) {
-			temp[(i * key) % message.length()] = message.charAt(i);
+			temp[(i * KEY) % message.length()] = message.charAt(i);
 		}
 
 		for (i = 0; i < message.length(); i++) {
@@ -36,7 +23,7 @@ public class SinCypher {
 		int i;
 
 		for (i = 0; i < message.length(); i++) {
-			temp[i] = message.charAt((i * key) % message.length());
+			temp[i] = message.charAt((i * KEY) % message.length());
 		}
 
 		for (i = 0; i < message.length(); i++) {
