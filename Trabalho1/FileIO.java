@@ -84,7 +84,7 @@ public class FileIO {
 			writer.close();
 		}
 
-		System.out.println("The file was saved with the name: " + filename + ".");
+		System.out.println("The file was saved with the name: " + filename);
 	}
 
 	public void writeTextFile(String content) throws IOException {
@@ -152,6 +152,6 @@ public class FileIO {
 			writer.close();
 		}
 
-		System.out.println("The file was saved with the name: " + filename + ".");
+		System.out.println("The file was saved with the name: " + filename);
 	}
 }
