@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class FileIO {
 	private static final String WINDOWS_SUFIX = ".txt";
-	private static final String OUT_SUFIX = "_out";
+	private static final String OUT_SUFIX = "_cyphered";
 
 	private final String filename;
 	private File file = null;
