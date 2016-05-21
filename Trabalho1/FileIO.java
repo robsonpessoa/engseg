@@ -51,25 +51,25 @@ public class FileIO {
 	public String readTextFile() throws Exception {
 		System.out.println("Reading the file...");
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-	    String         line = null;
-	    StringBuilder  stringBuilder = new StringBuilder();
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
 
-	    String result = null;
+		String result = null;
 
-	    try {
-	        while((line = reader.readLine()) != null) {
-	            stringBuilder.append(line);
-	            stringBuilder.append(this.ls);
-	        }
+		try {
+			while ((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				stringBuilder.append(this.ls);
+			}
 
-	        result = stringBuilder.toString();
-	    } finally {
-	        reader.close();
-	    }
+			result = stringBuilder.toString();
+		} finally {
+			reader.close();
+		}
 
 		System.out.println("The file was read successfully.");
 
-	    return result;
+		return result;
 	}
 
 	public void writeTextFile(String content, String filename) throws IOException {
@@ -78,7 +78,7 @@ public class FileIO {
 
 		try {
 			writer.write(content);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			writer.close();
@@ -101,10 +101,10 @@ public class FileIO {
 		List<BigInteger> result = new ArrayList<>();
 
 		try {
-			while(true) {
+			while (true) {
 				result.add(BigInteger.valueOf(reader.readInt()));
 			}
-		} catch(EOFException ex){
+		} catch (EOFException ex) {
 
 		} finally {
 			reader.close();

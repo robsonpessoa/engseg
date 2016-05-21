@@ -1,8 +1,8 @@
-import static java.lang.Math.sqrt;
-
-import java.util.List;
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.math.*;
+import java.util.List;
+
+import static java.lang.Math.sqrt;
 
 public class ManageRSA {
 	private static final int CONSTANT_P = 257;
@@ -15,6 +15,17 @@ public class ManageRSA {
 		initVariables(CONSTANT_P, CONSTANT_Q);
 		publicKey = autoPublic();
 		privateKey = calculatePrivateKey(publicKey);
+	}
+
+	public static void main(String args[]) {
+		ManageRSA a = new ManageRSA();
+
+		String message = "olar";
+		List<BigInteger> cyphered = a.encrypt(message);
+
+		System.out.println(message
+				+ " - " + cyphered
+				+ " - " + a.decrypt(cyphered));
 	}
 
 	public List<BigInteger> encrypt(String message) {
@@ -84,16 +95,5 @@ public class ManageRSA {
 		}
 
 		return true;
-	}
-
-	public static void main(String args[]) {
-		ManageRSA a = new ManageRSA();
-
-		String message = "olar";
-		List<BigInteger> cyphered = a.encrypt(message);
-
-		System.out.println(message
-				+ " - " + cyphered
-				+ " - " + a.decrypt(cyphered));
 	}
 }

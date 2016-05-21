@@ -1,7 +1,7 @@
 public class SinCypher {
 	int key = 7;
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		SinCypher sc = new SinCypher();
 		String message = "Goodbye World...";
 		String encrypted, decrypted;
@@ -19,27 +19,27 @@ public class SinCypher {
 		char temp[] = new char[message.length()];
 		int i;
 
-		for(i=0; i<message.length(); i++){
-			temp[(i*key)%message.length()] = message.charAt(i);
+		for (i = 0; i < message.length(); i++) {
+			temp[(i * key) % message.length()] = message.charAt(i);
 		}
 
-		for(i=0; i<message.length(); i++){
+		for (i = 0; i < message.length(); i++) {
 			newMessage += temp[i];
 		}
 
 		return newMessage;
 	}
 
-	public String decrypt(String message){
+	public String decrypt(String message) {
 		String newMessage = new String();
 		char temp[] = new char[message.length()];
 		int i;
 
-		for(i=0; i<message.length(); i++){
-			temp[i] = message.charAt((i*key)%message.length());
+		for (i = 0; i < message.length(); i++) {
+			temp[i] = message.charAt((i * key) % message.length());
 		}
 
-		for(i=0; i<message.length(); i++){
+		for (i = 0; i < message.length(); i++) {
 			newMessage += temp[i];
 		}
 
