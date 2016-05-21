@@ -97,8 +97,8 @@ public class FileCipher {
 	 * <p>
 	 * A criptografia acontece em dois níveis:
 	 * <ol>
-	 *     <li>Deslocar a posição dos caracteres. (@link ScrambleCipher)</li>
-	 *     <li>Aplicar o algoritmo RSA de criptografia. (@link ManageRSA)</li>
+	 *     <li>Deslocar a posição dos caracteres.</li>
+	 *     <li>Aplicar o algoritmo RSA de criptografia.</li>
 	 * </ol>
 	 * Após a criptografia, o arquivo é salvo como tipo binário. Se o usuário
 	 * não houver optado por um nome no arquivo de saída, este será igual ao
@@ -135,8 +135,8 @@ public class FileCipher {
 	 * <p>
 	 * A descriptografia acontece em dois níveis:
 	 * <ol>
-	 *     <li>Aplicar o algoritmo RSA de descriptografia. (@link ManageRSA)</li>
-	 *     <li>Deslocar a posição dos caracteres de volta à inicial. (@link ScrambleCipher)</li>
+	 *     <li>Aplicar o algoritmo RSA de descriptografia.</li>
+	 *     <li>Deslocar a posição dos caracteres de volta à inicial.</li>
 	 * </ol>
 	 * Após a descriptografia, o arquivo é salvo como tipo texto novamente. Se o usuário
 	 * não houver optado por um nome no arquivo de saída, este será igual ao
