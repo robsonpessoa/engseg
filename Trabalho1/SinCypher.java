@@ -1,5 +1,5 @@
 public class SinCypher {
-	int key = 10;
+	int key = 7;
 
 	public static void main(String[] args){
 		SinCypher sc = new SinCypher();
