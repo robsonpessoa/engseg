@@ -15,11 +15,11 @@ public class FileCipher {
 	}
 
 	private static boolean validateArguments(String args[]) {
-		if (args.length < 2 || args.length > 3) {
+		if (args.length < 4 || args.length > 5) {
 			System.err.println("Error: command not accepted.");
 			System.err.println("Try the following:");
-			System.err.println("\t encrypt <filename_in> [<filename_out>]");
-			System.err.println("\t decrypt <filename_in> [<filename_out>]");
+			System.err.println("\t encrypt prime1 prime2 <filename_in> [<filename_out>]");
+			System.err.println("\t decrypt prime1 prime2 <filename_in> [<filename_out>]");
 			return false;
 		}
 
