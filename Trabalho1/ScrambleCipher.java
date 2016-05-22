@@ -1,10 +1,6 @@
 public class ScrambleCipher {
 	private int key = 13;
 
-	public void setKey(int key) {
-		this.key = key;
-	}
-
 	public static void main(String[] args){
 		ScrambleCipher sc = new ScrambleCipher();
 		String message = "Goodbye World...";

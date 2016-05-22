@@ -13,18 +13,16 @@ public class FileCipher {
 	private static final String COMMAND_DECRYPT = "decrypt";
 
 	private BigInteger RSAKey;
-	private int scrambleKey;
 
-	public FileCipher(BigInteger rsaPublicKey, int scrambleKey) {
+	public FileCipher(BigInteger rsaPublicKey) {
 		this.RSAKey = rsaPublicKey;
-		this.scrambleKey = scrambleKey;
 	}
 
 	private static boolean validateArguments(String args[]) {
 		if (args[0].equals(COMMAND_GENERATE) && args.length == 1)
 			return true;
 
-		if (args.length < 4 || args.length > 5) {
+		if (args.length < 3 || args.length > 4) {
 			System.err.println("Error: command not accepted.");
 			System.err.println("Try the following:");
 			System.err.println("\t encrypt prime1 prime2 <filename_in> [<filename_out>]");
@@ -33,19 +31,12 @@ public class FileCipher {
 		}
 
 		String rsaKeyString = args[1];
-		String scrambleKeyString = args[2];
 
 		BigIntegerStringConverter converter = new BigIntegerStringConverter();
 		BigInteger rsaKey = converter.fromString(rsaKeyString);
-		int scrambleKey = Integer.parseInt(scrambleKeyString);
 
-		if (!rsaKey.isProbablePrime(0) || !Util.isPrime(scrambleKey)) {
-			System.err.println("The keys must be a prime number");
-			return false;
-		}
-
-		if (rsaKey.toString().equals(scrambleKey)) {
-			System.err.println("The keys must be distinct numbers");
+		if (!rsaKey.isProbablePrime(0)) {
+			System.err.println("The key must be a prime number");
 			return false;
 		}
 
@@ -57,9 +48,9 @@ public class FileCipher {
 	 * pelo usuário.
 	 * <p>
 	 * Os comandos possíveis são 'encrypt' e 'decrypt', que deverãp ser executados
-	 * passando como argumento dois números primos distintos, assim como o nome do
-	 * arquivo de entrada. Além disso, um nome de arquivo de saída também pode ser
-	 * passado como argumento (opicional).
+	 * passando como argumento sua chave pública, assim como o nome do arquivo de
+	 * entrada. Além disso, um nome de arquivo de saída também pode ser passado como
+	 * argumento opicional.
 	 *
 	 * @param args os argumentos do programa
 	 */
@@ -69,25 +60,21 @@ public class FileCipher {
 
 		String command = args[0];
 		String rsaKeyString;
-		String scrambleKeyString;
 		BigInteger rsaKey = null;
-		int scrambleKey = 0;
 		String sourceFile = null;
 		String destinyFile = null;
 
 		if (!command.equals(COMMAND_GENERATE)) {
 			rsaKeyString = args[1];
-			scrambleKeyString = args[2];
 			BigIntegerStringConverter converter = new BigIntegerStringConverter();
 			rsaKey = converter.fromString(rsaKeyString);
-			scrambleKey = Integer.parseInt(scrambleKeyString);
-			sourceFile = args[3];
+			sourceFile = args[2];
 			destinyFile = null;
-			if (args.length == 5)
-				destinyFile = args[4];
+			if (args.length == 4)
+				destinyFile = args[3];
 		}
 
-		FileCipher fileCipher = new FileCipher(rsaKey, scrambleKey);
+		FileCipher fileCipher = new FileCipher(rsaKey);
 
 		switch (command) {
 			case COMMAND_GENERATE:
@@ -143,7 +130,6 @@ public class FileCipher {
 		System.out.println("Encrypting...");
 		// Applying the ScrambleCipher
 		ScrambleCipher scramble = new ScrambleCipher();
-		scramble.setKey(scrambleKey);
 		content = scramble.encrypt(content);
 
 		// Applying the RSA
@@ -184,7 +170,6 @@ public class FileCipher {
 
 		// Applying the ScrambleCipher
 		ScrambleCipher scramble = new ScrambleCipher();
-		scramble.setKey(scrambleKey);
 		decrypted = scramble.decrypt(decrypted);
 
 		if (fileOut == null)
