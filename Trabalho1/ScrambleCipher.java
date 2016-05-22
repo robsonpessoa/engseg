@@ -1,9 +1,12 @@
+public class ScrambleCipher {
+	private int key = 13;
 
-public class SinCypher {
-	int key = 13;
+	public void setKey(int key) {
+		this.key = key;
+	}
 
 	public static void main(String[] args){
-		SinCypher sc = new SinCypher();
+		ScrambleCipher sc = new ScrambleCipher();
 		String message = "Goodbye World...";
 		String encrypted, decrypted;
 

@@ -1,3 +1,5 @@
+import javafx.util.converter.BigIntegerStringConverter;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -6,15 +8,22 @@ import java.util.List;
  */
 public class FileCipher {
 
-	private int RSAPublicKey;
+	private static final String COMMAND_GENERATE = "generate-keys";
+	private static final String COMMAND_ENCRYPT = "encrypt";
+	private static final String COMMAND_DECRYPT = "decrypt";
+
+	private BigInteger RSAKey;
 	private int scrambleKey;
 
-	public FileCipher(int rsaPublicKey, int scrambleKey) {
-		this.RSAPublicKey = rsaPublicKey;
+	public FileCipher(BigInteger rsaPublicKey, int scrambleKey) {
+		this.RSAKey = rsaPublicKey;
 		this.scrambleKey = scrambleKey;
 	}
 
 	private static boolean validateArguments(String args[]) {
+		if (args[0].equals(COMMAND_GENERATE) && args.length == 1)
+			return true;
+
 		if (args.length < 4 || args.length > 5) {
 			System.err.println("Error: command not accepted.");
 			System.err.println("Try the following:");
@@ -26,15 +35,16 @@ public class FileCipher {
 		String rsaKeyString = args[1];
 		String scrambleKeyString = args[2];
 
-		int rsaKey = Integer.parseInt(rsaKeyString);
+		BigIntegerStringConverter converter = new BigIntegerStringConverter();
+		BigInteger rsaKey = converter.fromString(rsaKeyString);
 		int scrambleKey = Integer.parseInt(scrambleKeyString);
 
-		if (!Util.isPrime(rsaKey) || !Util.isPrime(scrambleKey)) {
+		if (!rsaKey.isProbablePrime(0) || !Util.isPrime(scrambleKey)) {
 			System.err.println("The keys must be a prime number");
 			return false;
 		}
 
-		if (rsaKey == scrambleKey) {
+		if (rsaKey.toString().equals(scrambleKey)) {
 			System.err.println("The keys must be distinct numbers");
 			return false;
 		}
@@ -58,19 +68,35 @@ public class FileCipher {
 			return;
 
 		String command = args[0];
-		String rsaKeyString = args[1];
-		String scrambleKeyString = args[2];
-		int rsaKey = Integer.parseInt(rsaKeyString);
-		int scrambleKey = Integer.parseInt(scrambleKeyString);
-		String sourceFile = args[3];
+		String rsaKeyString;
+		String scrambleKeyString;
+		BigInteger rsaKey = null;
+		int scrambleKey = 0;
+		String sourceFile = null;
 		String destinyFile = null;
-		if (args.length == 5)
-			destinyFile = args[4];
+
+		if (!command.equals(COMMAND_GENERATE)) {
+			rsaKeyString = args[1];
+			scrambleKeyString = args[2];
+			BigIntegerStringConverter converter = new BigIntegerStringConverter();
+			rsaKey = converter.fromString(rsaKeyString);
+			scrambleKey = Integer.parseInt(scrambleKeyString);
+			sourceFile = args[3];
+			destinyFile = null;
+			if (args.length == 5)
+				destinyFile = args[4];
+		}
 
 		FileCipher fileCipher = new FileCipher(rsaKey, scrambleKey);
 
 		switch (command) {
-			case "encrypt":
+			case COMMAND_GENERATE:
+				ManageRSA rsa = new ManageRSA();
+				System.out.println("Keys created successfully.");
+				System.out.println("Your public key is: " + rsa.getPublicKey().toString());
+				System.out.println("Your private key is: " + rsa.getPrivateKey().toString());
+				break;
+			case COMMAND_ENCRYPT:
 				try {
 					fileCipher.encrypt(sourceFile, destinyFile);
 					System.out.println("File encrypted successfully.");
@@ -79,7 +105,7 @@ public class FileCipher {
 							+ ex.getMessage());
 				}
 				break;
-			case "decrypt":
+			case COMMAND_DECRYPT:
 				try {
 					fileCipher.decrypt(sourceFile, destinyFile);
 					System.out.println("File decrypted successfully.");
@@ -108,7 +134,7 @@ public class FileCipher {
 	 * @param  fileIn  o nome do arquivo de entrada a ser criptografado
 	 * @param  fileOut o nome do arquivo binário de saída
 	 * @see         ScrambleCipher#encrypt(String)
-	 * @see         ManageRSA#encrypt(String)
+	 * @see         ManageRSA#encrypt(BigInteger, String)
 	 */
 	public void encrypt(String fileIn, String fileOut) throws Exception {
 		FileIO fio = new FileIO(fileIn);
@@ -117,13 +143,12 @@ public class FileCipher {
 		System.out.println("Encrypting...");
 		// Applying the ScrambleCipher
 		ScrambleCipher scramble = new ScrambleCipher();
-		scramble.setPublicKey(scrambleKey);
+		scramble.setKey(scrambleKey);
 		content = scramble.encrypt(content);
 
 		// Applying the RSA
 		ManageRSA rsa = new ManageRSA();
-		rsa.setPublicKey(RSAPublicKey);
-		List<BigInteger> encrypted = rsa.encrypt(content);
+		List<BigInteger> encrypted = rsa.encrypt(RSAKey, content);
 
 		if (fileOut != null)
 			fio.write(encrypted, fileOut);
@@ -146,7 +171,7 @@ public class FileCipher {
 	 * @param  fileIn  o nome do arquivo binário de entrada a ser descriptografado
 	 * @param  fileOut o nome do arquivo de texto de saída
 	 * @see         ScrambleCipher#decrypt(String)
-	 * @see         ManageRSA#decrypt(List)
+	 * @see         ManageRSA#decrypt(BigInteger, List)
 	 */
 	public void decrypt(String fileIn, String fileOut) throws Exception {
 		FileIO fio = new FileIO(fileIn);
@@ -155,12 +180,11 @@ public class FileCipher {
 		System.out.println("Decrypting...");
 		// Applying the RSA
 		ManageRSA rsa = new ManageRSA();
-		rsa.setPublicKey(RSAPublicKey);
-		String decrypted = rsa.decrypt(content);
+		String decrypted = rsa.decrypt(RSAKey, content);
 
 		// Applying the ScrambleCipher
 		ScrambleCipher scramble = new ScrambleCipher();
-		scramble.setPublicKey(scrambleKey);
+		scramble.setKey(scrambleKey);
 		decrypted = scramble.decrypt(decrypted);
 
 		if (fileOut == null)

@@ -1,8 +1,10 @@
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ManageRSA {
+	private static final int SIZE = 1024;
 	private static final int CONSTANT_P = 257;
 	private static final int CONSTANT_Q = 263;
 	private static final int PUBLIC_KEY = 7;
@@ -10,14 +12,18 @@ public class ManageRSA {
 	private BigInteger n, z, p, q, publicKey, privateKey;
 
 	public ManageRSA() {
-		initVariables(CONSTANT_P, CONSTANT_Q);
+		initVariables(BigInteger.valueOf(CONSTANT_P), BigInteger.valueOf(CONSTANT_Q));
 		publicKey = autoPublic();
 		privateKey = calculatePrivateKey(publicKey);
 	}
 
-	public List<BigInteger> encrypt(String message) {
+	private BigInteger generatePrime() {
+		return new BigInteger(SIZE, 15, new Random());
+	}
+
+	public List<BigInteger> encrypt(BigInteger publicKey, String message) {
 		int i;
-		List<BigInteger> newMessage = new ArrayList<BigInteger>();
+		List<BigInteger> newMessage = new ArrayList<>();
 
 		for (i = 0; i < message.length(); i++) {
 			BigInteger c = BigInteger.valueOf(message.charAt(i));
@@ -28,6 +34,10 @@ public class ManageRSA {
 	}
 
 	public String decrypt(List<BigInteger> message) {
+		return decrypt(privateKey, message);
+	}
+
+	public String decrypt(BigInteger privateKey, List<BigInteger> message) {
 		String newMessage = new String();
 
 		for (int i = 0; i < message.size(); i++) {
@@ -38,17 +48,17 @@ public class ManageRSA {
 		return newMessage;
 	}
 
-	public void initVariables(int p, int q) {
-		if (Util.isPrime(p)) this.p = BigInteger.valueOf(p);
-		if (Util.isPrime(q)) this.q = BigInteger.valueOf(q);
+	private void initVariables(BigInteger p, BigInteger q) {
+		this.p = p;
+		this.q = q;
 		n = this.p.multiply(this.q);
 		z = this.p.subtract(BigInteger.valueOf(1)).multiply(this.q.subtract(BigInteger.valueOf(1)));
 	}
 
-	public int setPublicKey(int pub) {
-		if (Util.isPrime(pub) && pub < z.intValue()) {
-			this.publicKey = BigInteger.valueOf(pub);
-			privateKey = calculatePrivateKey(BigInteger.valueOf(pub));
+	public int setPublicKey(BigInteger pub) {
+		if (pub.isProbablePrime(0) && pub.compareTo(z) < 0) {
+			this.publicKey = pub;
+			privateKey = calculatePrivateKey(pub);
 			return 1;
 		}
 
@@ -73,6 +83,14 @@ public class ManageRSA {
 	}
 
 	private BigInteger autoPublic() {
-		return BigInteger.valueOf(PUBLIC_KEY);
+		BigInteger key;
+		do {
+			key = new BigInteger(2 * SIZE, new Random());
+		}
+		while ((key.compareTo(z) != 1)
+				||
+				(key.gcd(z).compareTo(BigInteger.valueOf(1)) != 0));
+
+		return key;
 	}
 }
